@@ -2,6 +2,7 @@ import { io, type Socket } from "socket.io-client";
 import { apiRequest } from "../../shared/api-client";
 import { SOCKET_URL } from "../../shared/api-config";
 import type { ChatMessage, SendMessageDto } from "./chat.types";
+import { getAccessToken } from "../auth/auth.token.handler";
 
 export type ChatSocket = Socket;
 
@@ -10,7 +11,7 @@ export function getChatMessages(userA: string, userB: string) {
   return apiRequest<ChatMessage[]>(`/chat/messages?${query}`);
 }
 
-export function connectToChat(
+export async function connectToChat(
   userId: string,
   onMessage: (message: ChatMessage) => void,
   onError: (message: string) => void,
@@ -21,7 +22,12 @@ export function connectToChat(
     );
   }
 
-  const socket = io(SOCKET_URL);
+  const accessToken = await getAccessToken();
+  const socket = io(SOCKET_URL, {
+    auth: {
+      token: accessToken,
+    },
+  });
   socket.on("connect", () => socket.emit("join_chat", { userId }));
   socket.on("new_message", onMessage);
   socket.on("join_error", (payload: { message?: string }) => {

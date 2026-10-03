@@ -6,30 +6,34 @@ import { AuthProvider, useAuth } from "../features/auth/AuthProvider";
 
 function AppNavigator() {
   const { user, isAuthenticating } = useAuth();
+
   if (isAuthenticating) {
     return null;
   }
-  if (user) {
-    return <Redirect href="/chats" />;
-  }
-  return <Redirect href="/profile" />;
+
+  return (
+    <>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          animation: "none",
+          contentStyle: {
+            backgroundColor: "#FFFFFF",
+          },
+        }}
+      />
+
+      {user ? <Redirect href="/chats" /> : <Redirect href="/profile" />}
+    </>
+  );
 }
 
 export default function RootLayout() {
   return (
     <AuthProvider>
       <KeyboardProvider>
-        <StatusBar style="light" hidden={false} />
-
+        <StatusBar style="dark" hidden={false} />
         <AppNavigator />
-
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            animation: "none",
-            contentStyle: { backgroundColor: "#FFFFFF" },
-          }}
-        />
       </KeyboardProvider>
     </AuthProvider>
   );

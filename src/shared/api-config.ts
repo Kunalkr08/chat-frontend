@@ -1,9 +1,12 @@
 import { Platform } from "react-native";
 
-const trimTrailingSlash = (value: string) => value.replace(/\/+$/, "");
+const trimTrailingSlash = (value: string) =>
+  value.replace(/\/+$/, "");
 
 const localApiUrl =
-  Platform.OS === "android" ? "http://10.0.2.2:3000" : "http://localhost:3000";
+  Platform.OS === "android"
+    ? "http://10.108.98.180:3000"
+    : "http://localhost:3000";
 
 export const API_BASE_URL = trimTrailingSlash(
   process.env.EXPO_PUBLIC_API_URL || localApiUrl,
