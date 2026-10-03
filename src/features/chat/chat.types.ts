@@ -7,7 +7,6 @@ export type ChatMessage = {
 };
 
 export type SendMessageDto = {
-  senderId: string;
   receiverId: string;
   content: string;
 };

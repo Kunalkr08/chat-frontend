@@ -7,14 +7,15 @@ import {
 } from "react";
 
 import { getCurrentUser, getUsers, loginUser, registerUser } from "./auth.service";
-import type { CreateUserDto, LoginUserDto, User } from "./auth.types";
+import type { CreateUserDto, LoginResponse, LoginUserDto, User } from "./auth.types";
 import { ApiError } from "@/shared/api-client";
+import { removeAccessToken, saveAccessToken } from "./auth.token.handler";
 
 type AuthContextValue = {
   user: User | null;
   isAuthenticating: boolean;
   register: (dto: CreateUserDto) => Promise<User>;
-  login: (dto: LoginUserDto) => Promise<User>;
+  login: (dto: LoginUserDto) => Promise<LoginResponse>;
   logout: () => void;
 };
 
@@ -58,14 +59,16 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
     try {
       const loggedInUser = await loginUser(dto);
-      setUser(loggedInUser);
+      await saveAccessToken(loggedInUser.accessToken);
+      setUser(loggedInUser.user);
       return loggedInUser;
     } finally {
       setIsAuthenticating(false);
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await removeAccessToken();
     setUser(null);
   };
 

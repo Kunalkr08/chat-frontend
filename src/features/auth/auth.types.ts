@@ -15,3 +15,8 @@ export type LoginUserDto = {
   email: string;
   password: string;
 };
+
+export type LoginResponse = {
+   user: User,
+   accessToken: string
+}
