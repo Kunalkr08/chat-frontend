@@ -1,0 +1,47 @@
+import { StyleSheet } from "react-native";
+
+export const styles = StyleSheet.create({
+  messageList: {},
+  dateBadge: {
+    alignSelf: "center",
+    backgroundColor: "#FFFFFF",
+    color: "#667781",
+    fontSize: 11,
+    fontWeight: "600",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+    marginBottom: 12,
+  },
+  incomingBubble: {
+    alignSelf: "flex-start",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 8,
+    borderTopLeftRadius: 0,
+    paddingHorizontal: 9,
+    paddingTop: 7,
+    paddingBottom: 5,
+    marginBottom: 8,
+    maxWidth: "82%",
+    elevation: 1,
+  },
+  outgoingBubble: {
+    alignSelf: "flex-end",
+    backgroundColor: "#D9FDD3",
+    borderRadius: 8,
+    borderTopRightRadius: 0,
+    paddingHorizontal: 9,
+    paddingTop: 7,
+    paddingBottom: 5,
+    marginBottom: 8,
+    maxWidth: "82%",
+    elevation: 1,
+  },
+  bubbleText: { color: "#111B21", fontSize: 14, lineHeight: 20 },
+  bubbleMeta: {
+    color: "#667781",
+    fontSize: 10,
+    alignSelf: "flex-end",
+    marginTop: 3,
+  },
+});

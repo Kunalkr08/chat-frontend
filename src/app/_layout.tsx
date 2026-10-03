@@ -1,18 +1,36 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useColorScheme } from 'react-native';
+import { Redirect, Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
+import { AuthProvider, useAuth } from "../features/auth/AuthProvider";
 
-SplashScreen.preventAutoHideAsync();
+function AppNavigator() {
+  const { user, isAuthenticating } = useAuth();
+  if (isAuthenticating) {
+    return null;
+  }
+  if (user) {
+    return <Redirect href="/chats" />;
+  }
+  return <Redirect href="/profile" />;
+}
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+export default function RootLayout() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
-      <AppTabs />
-    </ThemeProvider>
+    <AuthProvider>
+      <KeyboardProvider>
+        <StatusBar style="light" hidden={false} />
+
+        <AppNavigator />
+
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            animation: "none",
+            contentStyle: { backgroundColor: "#FFFFFF" },
+          }}
+        />
+      </KeyboardProvider>
+    </AuthProvider>
   );
 }

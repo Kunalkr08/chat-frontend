@@ -1,0 +1,42 @@
+import { StyleSheet } from "react-native";
+
+export const styles = StyleSheet.create({
+  safeArea: { flex: 1, backgroundColor: "#075E54" },
+  container: { flex: 1, backgroundColor: "#FFFFFF" },
+  content: { paddingBottom: 86 },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingTop: 13,
+    paddingBottom: 12,
+    backgroundColor: "#075E54",
+  },
+  title: {
+    color: "#FFFFFF",
+    fontSize: 21,
+    fontWeight: "700",
+    letterSpacing: -0.4,
+  },
+  headerActions: { flexDirection: "row", alignItems: "center", gap: 22 },
+  conversationList: { marginBottom: 0 },
+  emptyState: { color: "#667781", textAlign: "center", padding: 30 },
+  fab: {
+    position: "absolute",
+    right: 18,
+    bottom: 18,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: "#00A884",
+    alignItems: "center",
+    justifyContent: "center",
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  fabText: { color: "#FFFFFF", fontSize: 27, fontWeight: "300" },
+});
