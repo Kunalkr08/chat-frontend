@@ -8,9 +8,11 @@ import { ChatTabs, ConversationRow } from "../../components";
 import { useChatUsers } from "../../useChatUsers";
 import { filterConversations, toConversation } from "../../utils";
 import { styles } from "./ChatScreen.styles";
+import { Dropdown } from "@/shared/components/Dropdown";
 
 export function ChatScreen() {
   const [activeFilter, setActiveFilter] = useState("All");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("Chats");
   const [search, setSearch] = useState("");
   const { users, isLoading, error } = useChatUsers();
@@ -21,7 +23,17 @@ export function ChatScreen() {
     activeFilter,
   );
 
-  console.log("users..", users)
+  const options = [
+    {
+      label: "Profile",
+      value: "profile",
+    },
+    {
+      label: "Logout",
+      value: "logout",
+      danger: true
+    },
+  ];
 
   return (
     <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
@@ -32,7 +44,7 @@ export function ChatScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.header}>
-            <Text style={styles.title}>WhatsApp</Text>
+            <Text style={styles.title}>ChatsApp</Text>
             <View style={styles.headerActions}>
               <SymbolView
                 name={{
@@ -52,38 +64,34 @@ export function ChatScreen() {
                 tintColor="#FFFFFF"
                 size={22}
               />
-              <SymbolView
-                name={{
-                  ios: "ellipsis",
-                  android: "more_vert",
-                  web: "more_vert",
+              <Pressable
+                onPress={() => setIsDropdownOpen(true)}
+                style={{ padding: 8 }}
+              >
+                <SymbolView
+                  name={{
+                    ios: "ellipsis",
+                    android: "more_vert",
+                    web: "more_vert",
+                  }}
+                  tintColor="#FFFFFF"
+                  size={23}
+                />
+              </Pressable>
+
+              <Dropdown
+                visible={isDropdownOpen}
+                options={options}
+                onClose={() => setIsDropdownOpen(false)}
+                onSelect={(value) => {
+                  if (value === "profile") {
+                    router.push("/profile");
+                  }
                 }}
-                tintColor="#FFFFFF"
-                size={23}
               />
             </View>
           </View>
           <ChatTabs activeTab={activeTab} onChangeTab={setActiveTab} />
-          {/* <View style={styles.searchBox}>
-            <SymbolView
-              name={{
-                ios: "magnifyingglass",
-                android: "search",
-                web: "search",
-              }}
-              tintColor="#667781"
-              size={20}
-              style={styles.searchIcon}
-            />
-            <TextInput
-              value={search}
-              onChangeText={setSearch}
-              placeholder="Search"
-              placeholderTextColor="#9A958B"
-              style={styles.searchInput}
-            />
-            <Text style={styles.searchShortcut}>⌘ K</Text>
-          </View> */}
           <View style={styles.conversationList}>
             {isLoading && (
               <Text style={styles.emptyState}>Loading users...</Text>

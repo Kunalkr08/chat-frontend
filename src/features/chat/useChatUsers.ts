@@ -13,7 +13,6 @@ export function useChatUsers() {
       let isActive = true;
       
       if (!currentUser) {
-          console.log("Hehehheh..")
           setUsers([]);
           setIsLoading(false);
           setError("Sign in to load users.");
@@ -21,7 +20,6 @@ export function useChatUsers() {
               isActive = false;
             };
         }
-        console.log("currentUser..", currentUser);
         
         setIsLoading(true);
         setError("");

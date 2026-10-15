@@ -5,7 +5,7 @@ const trimTrailingSlash = (value: string) =>
 
 const localApiUrl =
   Platform.OS === "android"
-    ? "http://10.108.98.180:3000"
+    ? "http://10.133.51.180:3000"
     : "http://localhost:3000";
 
 export const API_BASE_URL = trimTrailingSlash(

@@ -56,7 +56,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
   const login = async (dto: LoginUserDto) => {
     setIsAuthenticating(true);
-
     try {
       const loggedInUser = await loginUser(dto);
       await saveAccessToken(loggedInUser.accessToken);

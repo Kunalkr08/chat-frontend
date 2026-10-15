@@ -1,7 +1,7 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { SymbolView } from "expo-symbols";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Platform, Pressable, ScrollView, Text, View } from "react-native";
 import {
   KeyboardChatScrollView,
@@ -24,7 +24,8 @@ export function ChatConversationScreen() {
     isLoading: isUsersLoading,
     error: usersError,
   } = useChatUsers();
-  const { messages, isLoading, error, send } = useChatMessages(id);
+  const { messages, isLoading, error, send, markIncomingMessagesAsRead } =
+    useChatMessages(id);
   const messageScrollRef = useRef<Animated.ScrollView>(null);
   const hasScrolledToLatestMessage = useRef(false);
   const contact = users.find((item) => item.id === id);
@@ -55,6 +56,12 @@ export function ChatConversationScreen() {
       );
     }
   };
+
+  useEffect(() => {
+    if (!id || isLoading) return;
+
+    markIncomingMessagesAsRead();
+  }, [id, isLoading, markIncomingMessagesAsRead]);
 
   if (!conversation && isUsersLoading) {
     return (

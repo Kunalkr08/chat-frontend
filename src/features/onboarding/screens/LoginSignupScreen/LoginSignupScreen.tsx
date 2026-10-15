@@ -12,9 +12,9 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { styles } from "./ProfileScreen.styles";
+import { styles } from "./LoginSignuoScreen.styles";
 
-export function ProfileScreen() {
+export function LoginSignupScreen() {
   const { isAuthenticating, login, register } = useAuth();
   const [mode, setMode] = useState<"register" | "login">("register");
   const [name, setName] = useState("");

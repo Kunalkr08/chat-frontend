@@ -5,6 +5,7 @@ import {
   getChatMessages,
   sendChatMessage,
   type ChatSocket,
+  markMessagesRead,
 } from "./chat.service";
 import type { ChatMessage } from "./chat.types";
 
@@ -12,13 +13,18 @@ function mergeMessages(current: ChatMessage[], incoming: ChatMessage[]) {
   const byId = new Map(current.map((message) => [message.id, message]));
 
   for (const message of incoming) {
-    byId.set(message.id, message);
+    const existing = byId.get(message.id);
+
+    byId.set(message.id, {
+      ...existing,
+      ...message,
+      readAt: message.readAt ?? existing?.readAt ?? null,
+    });
   }
 
   return [...byId.values()].sort(
     (left, right) =>
-      new Date(left.createdAt).getTime() -
-      new Date(right.createdAt).getTime(),
+      new Date(left.createdAt).getTime() - new Date(right.createdAt).getTime(),
   );
 }
 
@@ -50,6 +56,12 @@ export function useChatMessages(receiverId: string) {
 
     let socket: ChatSocket | undefined;
 
+    const markMessagesReadIfConnected = () => {
+      if (socket?.connected) {
+        markMessagesRead(socket, receiverId);
+      }
+    };
+
     async function connect() {
       try {
         socket = await connectToChat(
@@ -62,15 +74,34 @@ export function useChatMessages(receiverId: string) {
                 message.receiverId === currentUserId);
 
             if (isActive && belongsToConversation) {
-              setMessages((current) =>
-                mergeMessages(current, [message]),
-              );
+              setMessages((current) => mergeMessages(current, [message]));
+
+              if (
+                message.senderId === receiverId &&
+                message.receiverId === currentUserId
+              ) {
+                markMessagesReadIfConnected();
+              }
             }
           },
           (message) => {
             if (isActive) {
               setError(message);
             }
+          },
+          (payload) => {
+            if (!isActive || payload.readerId !== receiverId) {
+              return;
+            }
+
+            setMessages((current) =>
+              current.map((message) =>
+                message.senderId === currentUserId &&
+                message.receiverId === payload.readerId
+                  ? { ...message, readAt: payload.readAt }
+                  : message,
+              ),
+            );
           },
         );
 
@@ -95,9 +126,7 @@ export function useChatMessages(receiverId: string) {
 
         socket.on("connect_error", (cause: Error) => {
           if (isActive) {
-            setError(
-              cause.message || "Unable to connect to chat.",
-            );
+            setError(cause.message || "Unable to connect to chat.");
           }
         });
       } catch (cause) {
@@ -116,17 +145,13 @@ export function useChatMessages(receiverId: string) {
     getChatMessages(user.id, receiverId)
       .then((result) => {
         if (isActive) {
-          setMessages((current) =>
-            mergeMessages(current, result),
-          );
+          setMessages((current) => mergeMessages(current, result));
         }
       })
       .catch((cause: unknown) => {
         if (isActive) {
           setError(
-            cause instanceof Error
-              ? cause.message
-              : "Unable to load messages.",
+            cause instanceof Error ? cause.message : "Unable to load messages.",
           );
         }
       })
@@ -151,9 +176,7 @@ export function useChatMessages(receiverId: string) {
     }
 
     if (!socketRef.current) {
-      throw new Error(
-        "Chat is still connecting. Try again in a moment.",
-      );
+      throw new Error("Chat is still connecting. Try again in a moment.");
     }
 
     sendChatMessage(socketRef.current, {
@@ -162,11 +185,22 @@ export function useChatMessages(receiverId: string) {
     });
   };
 
+  const markIncomingMessagesAsRead = () => {
+    const socket = socketRef.current;
+
+    if (!socket?.connected || !user?.id || !receiverId) {
+      return;
+    }
+
+    markMessagesRead(socket, receiverId);
+  };
+
   return {
     messages,
     isLoading,
     isConnected,
     error,
     send,
+    markIncomingMessagesAsRead,
   };
 }

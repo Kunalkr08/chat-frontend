@@ -3,12 +3,13 @@ import { StatusBar } from "expo-status-bar";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 
 import { AuthProvider, useAuth } from "../features/auth/AuthProvider";
+import { LoadingScreen } from "@/shared/components/LoadingScreen";
 
 function AppNavigator() {
   const { user, isAuthenticating } = useAuth();
 
   if (isAuthenticating) {
-    return null;
+    return <LoadingScreen/>;
   }
 
   return (
@@ -23,7 +24,7 @@ function AppNavigator() {
         }}
       />
 
-      {user ? <Redirect href="/chats" /> : <Redirect href="/profile" />}
+      {user ? <Redirect href="/chats" /> : <Redirect href="/auth" />}
     </>
   );
 }

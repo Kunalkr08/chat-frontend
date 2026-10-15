@@ -41,7 +41,7 @@ export const styles = StyleSheet.create({
   bubbleMeta: {
     color: "#667781",
     fontSize: 10,
-    alignSelf: "flex-end",
+    // alignSelf: "flex-end",
     marginTop: 3,
   },
 });

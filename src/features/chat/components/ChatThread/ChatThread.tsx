@@ -1,6 +1,7 @@
 import { Text, View } from "react-native";
 import type { ChatMessage } from "../../chat.types";
 import { styles } from "./ChatThread.styles";
+import { SymbolView } from "expo-symbols";
 
 type Props = { messages: ChatMessage[]; currentUserId: string };
 
@@ -21,9 +22,36 @@ export function ChatThread({ messages, currentUserId }: Props) {
             style={isOutgoing ? styles.outgoingBubble : styles.incomingBubble}
           >
             <Text style={styles.bubbleText}>{message.content}</Text>
-            <Text style={styles.bubbleMeta}>
-              {formatMessageTime(message.createdAt)}
-            </Text>
+            <View
+              style={{ flexDirection: "row", alignSelf: "flex-end", gap: 4 }}
+            >
+              <Text style={styles.bubbleMeta}>
+                {formatMessageTime(message.createdAt)}
+              </Text>
+              {isOutgoing && (
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <SymbolView
+                    name={{
+                      ios: "checkmark",
+                      android: "check",
+                      web: "check",
+                    }}
+                    size={11}
+                    tintColor={message.readAt ? "#34B7F1" : "#8E8E93"}
+                  />
+                  <SymbolView
+                    name={{
+                      ios: "checkmark",
+                      android: "check",
+                      web: "check",
+                    }}
+                    size={11}
+                    tintColor={message.readAt ? "#34B7F1" : "#8E8E93"}
+                    style={{ marginLeft: -7 }}
+                  />
+                </View>
+              )}
+            </View>
           </View>
         );
       })}

@@ -16,7 +16,7 @@ export function OnboardingScreen() {
               <Text style={styles.logoText}>☎</Text>
             </View>
           </View>
-          <Text style={styles.title}>Welcome to WhatsApp</Text>
+          <Text style={styles.title}>Welcome to ChatsApp</Text>
           <Text style={styles.body}>
             Message your friends and family privately and securely. Connect with
             the people who matter most.
@@ -28,7 +28,7 @@ export function OnboardingScreen() {
           <Text style={styles.privacyLink}>Privacy Policy</Text>.
         </Text>
         <Pressable
-          onPress={() => router.push("/profile")}
+          onPress={() => router.push("/auth")}
           style={styles.primaryButton}
         >
           <Text style={styles.primaryButtonText}>Agree and continue</Text>
