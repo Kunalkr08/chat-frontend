@@ -1,4 +1,5 @@
-import { Redirect, Stack } from "expo-router";
+import { useEffect } from "react";
+import { Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 
@@ -7,25 +8,36 @@ import { LoadingScreen } from "@/shared/components/LoadingScreen";
 
 function AppNavigator() {
   const { user, isAuthenticating } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isAuthenticating) return;
+
+    const currentRoute = segments[0];
+
+    if (user && (currentRoute === "auth" || currentRoute === undefined)) {
+      router.replace("/chats");
+    } else if (
+      !user &&
+      ["chats", "profile", "chat"].includes(String(currentRoute))
+    ) {
+      router.replace("/"); // Go to onboarding after logout
+    }
+  }, [user, isAuthenticating, segments, router]);
 
   if (isAuthenticating) {
-    return <LoadingScreen/>;
+    return <LoadingScreen />;
   }
 
   return (
-    <>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          animation: "none",
-          contentStyle: {
-            backgroundColor: "#FFFFFF",
-          },
-        }}
-      />
-
-      {user ? <Redirect href="/chats" /> : <Redirect href="/auth" />}
-    </>
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        animation: "none",
+        contentStyle: { backgroundColor: "#FFFFFF" },
+      }}
+    />
   );
 }
 

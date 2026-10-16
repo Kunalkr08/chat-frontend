@@ -8,6 +8,7 @@ export type Conversation = {
   unread?: number;
   online?: boolean;
   label?: string;
+  avatar?: string;
 };
 
 export const filters = ["All", "Unread", "Groups"];

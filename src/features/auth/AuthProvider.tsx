@@ -6,7 +6,7 @@ import {
   type PropsWithChildren,
 } from "react";
 
-import { getCurrentUser, getUsers, loginUser, registerUser } from "./auth.service";
+import { getCurrentUser, loginUser, logoutCurrentUser, registerUser } from "./auth.service";
 import type { CreateUserDto, LoginResponse, LoginUserDto, User } from "./auth.types";
 import { ApiError } from "@/shared/api-client";
 import { removeAccessToken, saveAccessToken } from "./auth.token.handler";
@@ -67,6 +67,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   };
 
   const logout = async () => {
+    await logoutCurrentUser();
     await removeAccessToken();
     setUser(null);
   };

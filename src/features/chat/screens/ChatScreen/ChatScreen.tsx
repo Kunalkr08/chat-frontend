@@ -9,6 +9,7 @@ import { useChatUsers } from "../../useChatUsers";
 import { filterConversations, toConversation } from "../../utils";
 import { styles } from "./ChatScreen.styles";
 import { Dropdown } from "@/shared/components/Dropdown";
+import { useAuth } from "@/features/auth/AuthProvider";
 
 export function ChatScreen() {
   const [activeFilter, setActiveFilter] = useState("All");
@@ -22,6 +23,7 @@ export function ChatScreen() {
     search,
     activeFilter,
   );
+  const { logout } = useAuth();
 
   const options = [
     {
@@ -31,7 +33,7 @@ export function ChatScreen() {
     {
       label: "Logout",
       value: "logout",
-      danger: true
+      danger: true,
     },
   ];
 
@@ -83,9 +85,12 @@ export function ChatScreen() {
                 visible={isDropdownOpen}
                 options={options}
                 onClose={() => setIsDropdownOpen(false)}
-                onSelect={(value) => {
+                onSelect={async (value) => {
                   if (value === "profile") {
                     router.push("/profile");
+                  } else if (value === "logout") {
+                    await logout();
+                    router.replace("/");
                   }
                 }}
               />
@@ -106,7 +111,14 @@ export function ChatScreen() {
                 onPress={() =>
                   router.push({
                     pathname: "/chat/[id]",
-                    params: { id: conversation.id },
+                    params: {
+                      id: conversation.id,
+                      name: conversation.name,
+                      initials: conversation.initials,
+                      color: conversation.color,
+                      preview: conversation.preview ?? "",
+                      avatar: conversation.avatar ?? ""
+                    },
                   })
                 }
               />

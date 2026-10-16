@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   View,
+  Platform
 } from "react-native";
 
 type DropdownOption = {
@@ -63,6 +64,8 @@ export function Dropdown({
   );
 }
 
+const ios = Platform.OS === "ios";
+
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
@@ -74,7 +77,7 @@ const styles = StyleSheet.create({
   menu: {
     position: "absolute",
 
-    top: 120,
+    top: ios ? 120 : 50,
     right: 10,
 
     width: 180,

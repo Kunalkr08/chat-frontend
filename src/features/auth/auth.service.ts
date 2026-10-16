@@ -1,8 +1,16 @@
 import { apiRequest } from "../../shared/api-client";
-import type { CreateUserDto, LoginResponse, LoginUserDto, User } from "./auth.types";
+import type {
+  CreateUserDto,
+  LoginResponse,
+  LoginUserDto,
+  User,
+} from "./auth.types";
 
 export type AuthResponse = User | { user: User };
 export type AccessTokenResponse = String;
+type LogoutResponse = {
+  message: string;
+};
 
 function getAuthUser(response: AuthResponse): User {
   return "user" in response ? response.user : response;
@@ -19,9 +27,9 @@ export async function registerUser(dto: CreateUserDto) {
 
 export async function loginUser(dto: LoginUserDto): Promise<LoginResponse> {
   return await apiRequest<LoginResponse>("/auth/login", {
-      method: "POST",
-      body: JSON.stringify(dto),
-    });
+    method: "POST",
+    body: JSON.stringify(dto),
+  });
 }
 
 export async function refreshAccessToken() {
@@ -34,4 +42,10 @@ export function getUsers() {
 
 export function getCurrentUser() {
   return apiRequest<User>("/auth/me");
+}
+
+export function logoutCurrentUser() {
+  return apiRequest<LogoutResponse>("/auth/logout", {
+    method: "POST",
+  });
 }

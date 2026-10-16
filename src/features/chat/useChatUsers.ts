@@ -15,7 +15,7 @@ export function useChatUsers() {
       if (!currentUser) {
           setUsers([]);
           setIsLoading(false);
-          setError("Sign in to load users.");
+          setError("");
           return () => {
               isActive = false;
             };
