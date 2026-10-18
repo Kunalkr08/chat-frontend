@@ -2,9 +2,7 @@ import { useEffect } from "react";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { KeyboardProvider } from "react-native-keyboard-controller";
-
 import { AuthProvider, useAuth } from "../features/auth/AuthProvider";
-import { LoadingScreen } from "@/shared/components/LoadingScreen";
 
 function AppNavigator() {
   const { user, isAuthenticating } = useAuth();
@@ -22,13 +20,9 @@ function AppNavigator() {
       !user &&
       ["chats", "profile", "chat"].includes(String(currentRoute))
     ) {
-      router.replace("/"); // Go to onboarding after logout
+      router.replace("/");
     }
   }, [user, isAuthenticating, segments, router]);
-
-  if (isAuthenticating) {
-    return <LoadingScreen />;
-  }
 
   return (
     <Stack

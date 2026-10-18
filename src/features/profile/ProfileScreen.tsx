@@ -4,8 +4,16 @@ import { SymbolView } from "expo-symbols";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./profileScreen.style";
+import { useAuth } from "../auth/AuthProvider";
+
+function getFirstName(name: string | undefined): string {
+  if (!name) return "";
+  const names = name.split(" ");
+  return names[0];
+}
 
 export function ProfileScreen() {
+  const { user } = useAuth();
   return (
     <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
       <StatusBar style="light" />
@@ -14,7 +22,14 @@ export function ProfileScreen() {
         {/* Header */}
         <View style={styles.header}>
           <Pressable onPress={() => router.back()} style={styles.headerButton}>
-            <SymbolView name="chevron.left" size={22} tintColor="#FFFFFF" />
+            <SymbolView
+              name={{
+                ios: "chevron.left",
+                android: "arrow_back",
+              }}
+              size={22}
+              tintColor="#FFFFFF"
+            />
           </Pressable>
 
           <Text style={styles.headerTitle}>Profile</Text>
@@ -50,8 +65,8 @@ export function ProfileScreen() {
               />
             </Pressable>
 
-            <Text style={styles.name}>Kunal Kumar</Text>
-            <Text style={styles.username}>@kunal</Text>
+            <Text style={styles.name}>{user?.name}</Text>
+            <Text style={styles.username}>@{getFirstName(user?.name)}</Text>
           </View>
 
           {/* About */}
@@ -76,7 +91,7 @@ export function ProfileScreen() {
             <Text style={styles.sectionTitle}>Personal information</Text>
 
             {/* Phone */}
-            <View style={styles.infoRow}>
+            {/* <View style={styles.infoRow}>
               <SymbolView name="phone" size={22} tintColor="#667781" />
 
               <View style={styles.infoContent}>
@@ -84,17 +99,17 @@ export function ProfileScreen() {
                 <Text style={styles.infoLabel}>Phone</Text>
               </View>
 
-              {/* <Pressable>
+              <Pressable>
                 <SymbolView name="pencil" size={19} tintColor="#667781" />
-              </Pressable> */}
-            </View>
+              </Pressable>
+            </View> */}
 
             {/* Email */}
             <View style={styles.infoRow}>
               <SymbolView name="envelope" size={22} tintColor="#667781" />
 
               <View style={styles.infoContent}>
-                <Text style={styles.infoText}>kunal@example.com</Text>
+                <Text style={styles.infoText}>{user?.email}</Text>
                 <Text style={styles.infoLabel}>Email</Text>
               </View>
 
@@ -108,7 +123,7 @@ export function ProfileScreen() {
               <SymbolView name="at" size={22} tintColor="#667781" />
 
               <View style={styles.infoContent}>
-                <Text style={styles.infoText}>@kunal</Text>
+                <Text style={styles.infoText}>@{getFirstName(user?.name)}</Text>
                 <Text style={styles.infoLabel}>Username</Text>
               </View>
 

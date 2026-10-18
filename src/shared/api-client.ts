@@ -14,6 +14,41 @@ export class ApiError extends Error {
   }
 }
 
+function getErrorMessage(
+  payload: unknown,
+  statusText: string,
+  status: number,
+): string {
+  if (typeof payload === "string") {
+    return payload || statusText || `Request failed (${status})`;
+  }
+
+  if (!payload || typeof payload !== "object") {
+    return statusText || `Request failed (${status})`;
+  }
+
+  const body = payload as { message?: unknown };
+  const message = body.message;
+
+  if (typeof message === "string") {
+    return message;
+  }
+
+  if (Array.isArray(message)) {
+    return message.filter((item) => typeof item === "string").join("\n");
+  }
+
+  if (message && typeof message === "object" && "message" in message) {
+    const nestedMessage = message.message;
+
+    if (typeof nestedMessage === "string") {
+      return nestedMessage;
+    }
+  }
+
+  return statusText || `Request failed (${status})`;
+}
+
 type AccessTokenResponse = {
   accessToken: string;
 };
@@ -62,11 +97,11 @@ export async function apiRequest<T>(
   }
 
   if (!response.ok) {
-    const body = payload as { message?: string | string[] } | undefined;
-
-    const message = Array.isArray(body?.message)
-      ? body.message.join("\n")
-      : body?.message || response.statusText || "Request failed";
+    const message = getErrorMessage(
+      payload,
+      response.statusText,
+      response.status,
+    );
 
     throw new ApiError(message, response.status);
   }

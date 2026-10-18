@@ -46,7 +46,7 @@ export function ChatScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.header}>
-            <Text style={styles.title}>ChatsApp</Text>
+            <Text style={styles.title}>Connectify</Text>
             <View style={styles.headerActions}>
               <SymbolView
                 name={{

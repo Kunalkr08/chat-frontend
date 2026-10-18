@@ -6,17 +6,30 @@ import {
   type PropsWithChildren,
 } from "react";
 
-import { getCurrentUser, loginUser, logoutCurrentUser, registerUser } from "./auth.service";
-import type { CreateUserDto, LoginResponse, LoginUserDto, User } from "./auth.types";
+import {
+  getCurrentUser,
+  loginUser,
+  logoutCurrentUser,
+  registerUser,
+  verifyEmail as verifyEmailRequest,
+} from "./auth.service";
+import type {
+  CreateUserDto,
+  LoginResponse,
+  LoginUserDto,
+  User,
+  VerifyEmailDto,
+} from "./auth.types";
 import { ApiError } from "@/shared/api-client";
 import { removeAccessToken, saveAccessToken } from "./auth.token.handler";
 
 type AuthContextValue = {
   user: User | null;
   isAuthenticating: boolean;
-  register: (dto: CreateUserDto) => Promise<User>;
+  register: (dto: CreateUserDto) => Promise<{ message: string }>;
+  verifyEmail: (dto: VerifyEmailDto) => Promise<{ message: string }>;
   login: (dto: LoginUserDto) => Promise<LoginResponse>;
-  logout: () => void;
+  logout: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -44,11 +57,20 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
   const register = async (dto: CreateUserDto) => {
     setIsAuthenticating(true);
+    console.log("logs from register");
+    try {
+      return await registerUser(dto);
+    } finally {
+      console.log("log after register");
+      setIsAuthenticating(false);
+    }
+  };
+
+  const verifyEmail = async (dto: VerifyEmailDto) => {
+    setIsAuthenticating(true);
 
     try {
-      const createdUser = await registerUser(dto);
-      setUser(createdUser);
-      return createdUser;
+      return await verifyEmailRequest(dto);
     } finally {
       setIsAuthenticating(false);
     }
@@ -78,6 +100,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         user,
         isAuthenticating,
         register,
+        verifyEmail,
         login,
         logout,
       }}

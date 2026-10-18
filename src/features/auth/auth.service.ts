@@ -4,10 +4,17 @@ import type {
   LoginResponse,
   LoginUserDto,
   User,
+  VerifyEmailDto,
 } from "./auth.types";
 
 export type AuthResponse = User | { user: User };
 export type AccessTokenResponse = String;
+export type VerifyEmailResponse = {
+  message: string;
+};
+export type RegisterResponse = {
+  message: string;
+};
 type LogoutResponse = {
   message: string;
 };
@@ -17,19 +24,23 @@ function getAuthUser(response: AuthResponse): User {
 }
 
 export async function registerUser(dto: CreateUserDto) {
-  return getAuthUser(
-    await apiRequest<AuthResponse>("/users", {
-      method: "POST",
-      body: JSON.stringify(dto),
-    }),
-  );
-}
-
-export async function loginUser(dto: LoginUserDto): Promise<LoginResponse> {
-  return await apiRequest<LoginResponse>("/auth/login", {
+  console.log("Starting user registration.");
+  const result = await apiRequest<RegisterResponse>("/auth/register", {
     method: "POST",
     body: JSON.stringify(dto),
   });
+  console.log("User register successfully.", result);
+  return result;
+}
+
+export async function loginUser(dto: LoginUserDto): Promise<LoginResponse> {
+  console.log("Starting user login");
+  const result = await apiRequest<LoginResponse>("/auth/login", {
+    method: "POST",
+    body: JSON.stringify(dto),
+  });
+  console.log("user logged in successfully", result);
+  return result;
 }
 
 export async function refreshAccessToken() {
@@ -47,5 +58,12 @@ export function getCurrentUser() {
 export function logoutCurrentUser() {
   return apiRequest<LogoutResponse>("/auth/logout", {
     method: "POST",
+  });
+}
+
+export function verifyEmail(dto: VerifyEmailDto) {
+  return apiRequest<VerifyEmailResponse>("auth/verify-email", {
+    method: "POST",
+    body: JSON.stringify(dto),
   });
 }

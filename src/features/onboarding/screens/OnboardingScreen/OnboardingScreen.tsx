@@ -16,7 +16,7 @@ export function OnboardingScreen() {
               <Text style={styles.logoText}>☎</Text>
             </View>
           </View>
-          <Text style={styles.title}>Welcome to ChatsApp</Text>
+          <Text style={styles.title}>Welcome to Connectify</Text>
           <Text style={styles.body}>
             Message your friends and family privately and securely. Connect with
             the people who matter most.
@@ -33,7 +33,7 @@ export function OnboardingScreen() {
         >
           <Text style={styles.primaryButtonText}>Agree and continue</Text>
         </Pressable>
-        <Text style={styles.version}>from Meta</Text>
+        <Text style={styles.version}>from Team Connectify</Text>
       </View>
     </SafeAreaView>
   );

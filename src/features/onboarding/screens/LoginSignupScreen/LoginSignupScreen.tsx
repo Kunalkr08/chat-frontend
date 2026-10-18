@@ -25,27 +25,56 @@ export function LoginSignupScreen() {
   const submit = async () => {
     setError("");
 
-    if (!email.trim() || !password) {
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!normalizedEmail || !password) {
       setError("Enter your email and password.");
       return;
     }
-    if (mode === "register" && !name.trim()) {
-      setError("Enter your name to create an account.");
-      return;
+
+    if (mode === "register") {
+      if (!name.trim()) {
+        setError("Enter your name to create an account.");
+        return;
+      }
+
+      if (password.length < 8) {
+        setError("Password must be at least 8 characters long.");
+        return;
+      }
     }
 
     try {
       if (mode === "register") {
-        await register({ name: name.trim(), email: email.trim(), password });
-      } else {
-        await login({ email: email.trim(), password });
+        await register({
+          name: name.trim(),
+          email: normalizedEmail,
+          password,
+        });
+
+        router.push({
+          pathname: "/email-verification",
+          params: { email: normalizedEmail },
+        });
+
+        return;
       }
+
+      await login({
+        email: normalizedEmail,
+        password,
+      });
+
+      // Navigate only after login succeeds.
       router.replace("/chats");
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Unable to continue.");
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : "Unable to continue. Please try again.",
+      );
     }
   };
-
 
   const submitButton = (
     <Pressable

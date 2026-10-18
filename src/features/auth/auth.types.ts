@@ -17,6 +17,11 @@ export type LoginUserDto = {
 };
 
 export type LoginResponse = {
-   user: User,
-   accessToken: string
+  user: User,
+  accessToken: string
+}
+
+export type VerifyEmailDto = {
+  email: string,
+  otp: string
 }

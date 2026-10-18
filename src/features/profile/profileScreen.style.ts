@@ -14,6 +14,8 @@ export const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
   },
 
+  backText: { color: "#FFFFFF", fontSize: 30 },
+
   header: {
     height: 60,
     flexDirection: "row",
