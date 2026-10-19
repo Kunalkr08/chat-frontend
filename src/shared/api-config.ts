@@ -1,19 +1,17 @@
-import { Platform } from "react-native";
-
 const trimTrailingSlash = (value: string) =>
   value.replace(/\/+$/, "");
 
-const localApiUrl =
-  Platform.OS === "android"
-    ? "http://10.133.51.180:3000"
-    : "http://localhost:3000";
+const apiUrlFromEnv = process.env.EXPO_PUBLIC_API_URL;
+const socketUrlFromEnv = process.env.EXPO_PUBLIC_SOCKET_URL;
 
-export const API_BASE_URL = trimTrailingSlash(
-  process.env.EXPO_PUBLIC_API_URL || localApiUrl,
-);
+if (!apiUrlFromEnv) {
+  throw new Error("EXPO_PUBLIC_API_URL is not configured");
+}
+
+export const API_BASE_URL = trimTrailingSlash(apiUrlFromEnv);
 
 export const SOCKET_URL = trimTrailingSlash(
-  process.env.EXPO_PUBLIC_SOCKET_URL || API_BASE_URL,
+  socketUrlFromEnv || API_BASE_URL,
 );
 
 export function apiUrl(path: string) {
