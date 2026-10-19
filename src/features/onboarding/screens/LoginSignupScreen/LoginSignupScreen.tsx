@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/features/auth/AuthProvider";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -12,10 +13,12 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { styles } from "./LoginSignuoScreen.styles";
 
 export function LoginSignupScreen() {
   const { isAuthenticating, login, register } = useAuth();
+
   const [mode, setMode] = useState<"register" | "login">("register");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -65,7 +68,6 @@ export function LoginSignupScreen() {
         password,
       });
 
-      // Navigate only after login succeeds.
       router.replace("/chats");
     } catch (cause) {
       setError(
@@ -79,8 +81,12 @@ export function LoginSignupScreen() {
   const submitButton = (
     <Pressable
       onPress={submit}
-      style={[styles.primaryButton, isAuthenticating && styles.disabledButton]}
+      style={[
+        styles.primaryButton,
+        isAuthenticating && styles.disabledButton,
+      ]}
       disabled={isAuthenticating}
+      accessibilityRole="button"
     >
       {isAuthenticating ? (
         <ActivityIndicator color="#FFFFFF" />
@@ -92,102 +98,158 @@ export function LoginSignupScreen() {
     </Pressable>
   );
 
+  const formContent = (
+    <>
+      <Pressable
+        onPress={() => router.back()}
+        style={styles.backButton}
+        accessibilityLabel="Go back"
+        accessibilityRole="button"
+      >
+        <Text style={styles.backText}>‹</Text>
+      </Pressable>
+
+      <Text style={styles.profileTitle}>
+        {mode === "register" ? "Create your profile" : "Welcome back"}
+      </Text>
+
+      <Text style={styles.profileBody}>
+        {mode === "register"
+          ? "Add your details to get started."
+          : "Sign in to continue to your chats."}
+      </Text>
+
+      <Pressable
+        onPress={() => {
+          setError("");
+          setMode((current) =>
+            current === "register" ? "login" : "register",
+          );
+        }}
+        style={styles.modeSwitch}
+        accessibilityRole="button"
+      >
+        <Text style={styles.modeSwitchText}>
+          {mode === "register"
+            ? "Already have an account? Sign in"
+            : "New here? Create an account"}
+        </Text>
+      </Pressable>
+
+      {mode === "register" && (
+        <>
+          <Pressable
+            style={styles.avatarButton}
+            accessibilityLabel="Add profile photo"
+            accessibilityRole="button"
+          >
+            <Text style={styles.avatarText}>
+              {name.trim()
+                ? name.trim().slice(0, 2).toUpperCase()
+                : "＋"}
+            </Text>
+
+            <View style={styles.cameraBadge}>
+              <Text style={styles.cameraText}>⌾</Text>
+            </View>
+          </Pressable>
+
+          <Text style={styles.label}>Your name</Text>
+
+          <TextInput
+            value={name}
+            onChangeText={setName}
+            placeholder="Type your name"
+            placeholderTextColor="#8696A0"
+            style={styles.input}
+            autoCapitalize="words"
+            autoCorrect={false}
+            returnKeyType="next"
+            textContentType="name"
+          />
+        </>
+      )}
+
+      <Text style={styles.label}>Email</Text>
+
+      <TextInput
+        value={email}
+        onChangeText={setEmail}
+        placeholder="you@example.com"
+        placeholderTextColor="#8696A0"
+        style={styles.input}
+        keyboardType="email-address"
+        autoCapitalize="none"
+        autoCorrect={false}
+        textContentType="emailAddress"
+        returnKeyType="next"
+      />
+
+      <Text style={styles.label}>Password</Text>
+
+      <TextInput
+        value={password}
+        onChangeText={setPassword}
+        placeholder="Password"
+        placeholderTextColor="#8696A0"
+        style={styles.input}
+        secureTextEntry
+        autoCapitalize="none"
+        autoCorrect={false}
+        textContentType={
+          mode === "register" ? "newPassword" : "password"
+        }
+        returnKeyType="go"
+        onSubmitEditing={submit}
+      />
+
+      {error ? (
+        <Text accessibilityRole="alert" style={styles.errorText}>
+          {error}
+        </Text>
+      ) : null}
+
+      <View style={styles.profileButton}>{submitButton}</View>
+    </>
+  );
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
+
       <View style={styles.screen}>
-        <ScrollView
-          contentContainerStyle={styles.profileTop}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          <Pressable
-            onPress={() => router.back()}
-            style={styles.backButton}
-            accessibilityLabel="Go back"
-          >
-            <Text style={styles.backText}>‹</Text>
-          </Pressable>
-          <Text style={styles.profileTitle}>
-            {mode === "register" ? "Create your profile" : "Welcome back"}
-          </Text>
-          <Text style={styles.profileBody}>
-            {mode === "register"
-              ? "Add your details to get started."
-              : "Sign in to continue to your chats."}
-          </Text>
-          <Pressable
-            onPress={() => {
-              setError("");
-              setMode(mode === "register" ? "login" : "register");
-            }}
-            style={styles.modeSwitch}
-          >
-            <Text style={styles.modeSwitchText}>
-              {mode === "register"
-                ? "Already have an account? Sign in"
-                : "New here? Create an account"}
-            </Text>
-          </Pressable>
-          {mode === "register" && (
-            <Pressable
-              style={styles.avatarButton}
-              accessibilityLabel="Add profile photo"
-            >
-              <Text style={styles.avatarText}>
-                {name.trim() ? name.trim().slice(0, 2).toUpperCase() : "＋"}
-              </Text>
-              <View style={styles.cameraBadge}>
-                <Text style={styles.cameraText}>⌾</Text>
-              </View>
-            </Pressable>
-          )}
-          {mode === "register" && (
-            <>
-              <Text style={styles.label}>Your name</Text>
-              <TextInput
-                value={name}
-                onChangeText={setName}
-                placeholder="Type your name"
-                placeholderTextColor="#8696A0"
-                style={styles.input}
-                autoCapitalize="words"
-                returnKeyType="next"
-              />
-            </>
-          )}
-          <Text style={styles.label}>Email</Text>
-          <TextInput
-            value={email}
-            onChangeText={setEmail}
-            placeholder="you@example.com"
-            placeholderTextColor="#8696A0"
-            style={styles.input}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-            textContentType="emailAddress"
-            returnKeyType="next"
-          />
-          <Text style={styles.label}>Password</Text>
-          <TextInput
-            value={password}
-            onChangeText={setPassword}
-            placeholder="Password"
-            placeholderTextColor="#8696A0"
-            style={styles.input}
-            secureTextEntry
-            autoCapitalize="none"
-            textContentType={mode === "register" ? "newPassword" : "password"}
-            returnKeyType="go"
-            onSubmitEditing={submit}
-          />
-          {error ? <Text style={styles.errorText}>{error}</Text> : null}
-        </ScrollView>
         {Platform.OS === "web" ? (
-          <View style={styles.profileButton}>{submitButton}</View>
+          <ScrollView
+            style={{ flex: 1 }}
+            contentContainerStyle={[
+              styles.profileTop,
+              {
+                flexGrow: 1,
+                paddingBottom: 32,
+              },
+            ]}
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag"
+            showsVerticalScrollIndicator={false}
+          >
+            {formContent}
+          </ScrollView>
         ) : (
-          submitButton
+          <KeyboardAwareScrollView
+            style={{ flex: 1 }}
+            contentContainerStyle={[
+              styles.profileTop,
+              {
+                flexGrow: 1,
+                paddingBottom: 32,
+              },
+            ]}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+            bottomOffset={24}
+          >
+            {formContent}
+          </KeyboardAwareScrollView>
         )}
       </View>
     </SafeAreaView>

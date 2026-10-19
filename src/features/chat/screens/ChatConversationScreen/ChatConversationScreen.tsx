@@ -43,7 +43,7 @@ export function ChatConversationScreen() {
     error: usersError,
   } = useChatUsers();
 
-  const { messages, isLoading, error, send, markIncomingMessagesAsRead } =
+  const { messages, isLoading, isConnected, error, send, markIncomingMessagesAsRead } =
     useChatMessages(id);
 
   const messageScrollRef = useRef<Animated.ScrollView>(null);
@@ -104,10 +104,10 @@ export function ChatConversationScreen() {
   };
 
   useEffect(() => {
-    if (!id || isLoading || !fetchedConversation) return;
+    if (!id || isLoading || !fetchedConversation || !isConnected) return;
 
     markIncomingMessagesAsRead();
-  }, [id, isLoading, fetchedConversation, markIncomingMessagesAsRead]);
+  }, [id, isLoading, fetchedConversation, isConnected, markIncomingMessagesAsRead]);
 
   const composer = (
     <ChatComposer

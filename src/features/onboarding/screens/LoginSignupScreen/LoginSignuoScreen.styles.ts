@@ -1,17 +1,43 @@
+
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: "#FFFFFF" },
-  screen: { flex: 1, backgroundColor: "#FFFFFF", paddingHorizontal: 28 },
-  profileTop: { flexGrow: 1, paddingTop: 20, alignItems: "center" },
-  backButton: { alignSelf: "flex-start", padding: 4, marginBottom: 20 },
-  backText: { color: "#128C7E", fontSize: 30 },
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+  },
+
+  screen: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 28,
+  },
+
+  profileTop: {
+    flexGrow: 1,
+    paddingTop: 20,
+    paddingBottom: 32,
+    alignItems: "center",
+  },
+
+  backButton: {
+    alignSelf: "flex-start",
+    padding: 4,
+    marginBottom: 20,
+  },
+
+  backText: {
+    color: "#128C7E",
+    fontSize: 30,
+  },
+
   profileTitle: {
     color: "#111B21",
     fontSize: 24,
     fontWeight: "700",
     marginBottom: 8,
   },
+
   profileBody: {
     color: "#667781",
     textAlign: "center",
@@ -19,8 +45,19 @@ export const styles = StyleSheet.create({
     lineHeight: 21,
     marginBottom: 16,
   },
-  modeSwitch: { alignSelf: "center", paddingVertical: 8, marginBottom: 12 },
-  modeSwitchText: { color: "#128C7E", fontSize: 14, fontWeight: "600" },
+
+  modeSwitch: {
+    alignSelf: "center",
+    paddingVertical: 8,
+    marginBottom: 12,
+  },
+
+  modeSwitchText: {
+    color: "#128C7E",
+    fontSize: 14,
+    fontWeight: "600",
+  },
+
   avatarButton: {
     width: 112,
     height: 112,
@@ -30,7 +67,13 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 30,
   },
-  avatarText: { color: "#128C7E", fontSize: 36, fontWeight: "700" },
+
+  avatarText: {
+    color: "#128C7E",
+    fontSize: 36,
+    fontWeight: "700",
+  },
+
   cameraBadge: {
     position: "absolute",
     right: 0,
@@ -44,13 +87,19 @@ export const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: "#FFFFFF",
   },
-  cameraText: { color: "#FFFFFF", fontSize: 16 },
+
+  cameraText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+  },
+
   label: {
     alignSelf: "stretch",
     color: "#128C7E",
     fontSize: 12,
     marginBottom: 6,
   },
+
   input: {
     alignSelf: "stretch",
     borderBottomWidth: 2,
@@ -60,13 +109,21 @@ export const styles = StyleSheet.create({
     paddingVertical: 9,
     marginBottom: 16,
   },
+
   errorText: {
     alignSelf: "stretch",
     color: "#B3261E",
     fontSize: 13,
     marginBottom: 12,
   },
-  profileButton: { alignSelf: "stretch", paddingTop: 8 },
+
+  profileButton: {
+    alignSelf: "stretch",
+    paddingTop: 8,
+    marginTop: 24,
+    marginBottom: 8,
+  },
+
   primaryButton: {
     height: 50,
     borderRadius: 25,
@@ -75,6 +132,14 @@ export const styles = StyleSheet.create({
     backgroundColor: "#00A884",
     marginBottom: 16,
   },
-  disabledButton: { opacity: 0.65 },
-  primaryButtonText: { color: "#FFFFFF", fontSize: 16, fontWeight: "700" },
+
+  disabledButton: {
+    opacity: 0.65,
+  },
+
+  primaryButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "700",
+  },
 });
