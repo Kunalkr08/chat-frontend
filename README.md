@@ -1,56 +1,125 @@
-# Welcome to your Expo app 👋
+# Connectify — Real-Time Chat App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Connectify** is a mobile messaging application built with React Native and Expo. It provides a simple interface for users to register, verify their email, sign in, and communicate through real-time messaging.
 
-## Get started
+The application connects to a NestJS backend for authentication, message storage, and real-time communication.
 
-1. Install dependencies
+## Features
 
-   ```bash
-   npm install
-   ```
+- **User Registration & Login:** Create an account and securely sign in.
+- **Email Verification:** Verify your email address during the registration flow.
+- **Chat Interface:** Access conversations through a mobile-friendly messaging interface.
+- **Real-Time Messaging:** Send and receive messages through Socket.IO.
+- **Message Read Receipts:** View read status updates for messages.
+- **Authentication Flow:** Handle login state, authenticated screens, and logout.
+- **Cross-Platform Development:** Build and test the application using Expo for supported platforms.
 
-2. Start the app
+## Tech Stack
 
-   ```bash
-   npx expo start
-   ```
+| Component | Technology |
+|---|---|
+| Mobile framework | React Native |
+| Development platform | Expo |
+| Language | TypeScript |
+| Navigation | Expo Router |
+| Backend integration | REST APIs |
+| Real-time communication | Socket.IO Client |
+| Authentication | JWT-based backend authentication |
 
-In the output, you'll find options to open the app in a
+## How It Works
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```text
+       User
+        |
+        v
+  Connectify App
+  React Native + Expo
+        |
+        +------ REST API requests
+        |
+        +------ Socket.IO connection
+                       |
+                       v
+               NestJS Backend
+                       |
+                       v
+                PostgreSQL
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+The frontend handles the user interface and application navigation. The backend validates requests, manages authentication, persists messages, and delivers real-time events.
 
-### Other setup steps
+## Getting Started
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+### Prerequisites
 
-## Learn more
+- Node.js and npm
+- Git
+- Expo Go or a compatible development build
+- A running Connectify backend
 
-To learn more about developing your project with Expo, look at the following resources:
+### 1. Clone the repository
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+git clone https://github.com/Kunalkr08/chat-frontend.git
+cd chat-frontend
+npm install
+```
 
-## Join the community
+### 2. Configure environment variables
 
-Join our community of developers creating universal apps.
+Create a `.env` file in the project root and configure the backend URLs:
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```env
+EXPO_PUBLIC_API_URL=http://YOUR_BACKEND_HOST:3000
+EXPO_PUBLIC_SOCKET_URL=http://YOUR_BACKEND_HOST:3000
+```
+
+Replace `YOUR_BACKEND_HOST` with the appropriate hostname or IP address for your environment. Use the actual port configured by your backend.
+
+**Important:**
+- For Android emulators, use the host address appropriate to your emulator configuration.
+- For physical devices, use your computer's LAN IP if the backend is running locally.
+- For production, use your deployed backend's HTTPS/WSS endpoint as appropriate.
+- Only expose public configuration in `EXPO_PUBLIC_` variables. Never put private keys or backend secrets in the mobile app.
+
+### 3. Start the application
+
+```bash
+npx expo start
+```
+
+Follow the terminal instructions to open the application in Expo Go, an Android emulator, an iOS simulator, or a compatible development build.
+
+## Connecting to the Backend
+
+The frontend requires the Connectify backend for authentication, email verification, and messaging functionality.
+
+**Backend repository:** [github.com/Kunalkr08/chat-backend](https://github.com/Kunalkr08/chat-backend)
+
+Ensure the backend is running, its database is configured, and its CORS and network settings allow connections from your development environment.
+
+## Project Structure
+
+The application uses Expo Router for file-based navigation and organizes its source code under `src/`.
+
+```text
+chat-frontend/
+├── assets/          # Images and other static assets
+├── src/             # Application source code
+├── .env.example     # Example environment configuration
+├── app.json         # Expo application configuration
+├── package.json     # Dependencies and scripts
+└── README.md        # Project documentation
+```
+
+## Future Improvements
+
+Potential areas for further development include enhanced profile management, push notifications, and additional messaging capabilities.
+
+## Related Repository
+
+- **Backend API:** [chat-backend](https://github.com/Kunalkr08/chat-backend)
+
+## License
+
+See the repository's [MIT license](https://github.com/Kunalkr08/chat-frontend/blob/main/LICENSE).
