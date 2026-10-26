@@ -3,10 +3,10 @@
 ## Screenshots
 
 ### Onboarding Screen
-<img width="392" height="759" alt="Screenshot 2026-10-26 at 5 01 58 PM" src="https://github.com/user-attachments/assets/dc3e420b-b5ef-408c-9a77-724a5d485f3b" />
+<img width="391" height="761" alt="Screenshot 2026-10-26 at 5 01 48 PM" src="https://github.com/user-attachments/assets/eed11fe6-da71-47ec-9887-2f3218ec38f6" />
 
 ### Signup Screen
-<img width="391" height="761" alt="Screenshot 2026-10-26 at 5 01 48 PM" src="https://github.com/user-attachments/assets/eed11fe6-da71-47ec-9887-2f3218ec38f6" />
+<img width="392" height="759" alt="Screenshot 2026-10-26 at 5 01 58 PM" src="https://github.com/user-attachments/assets/dc3e420b-b5ef-408c-9a77-724a5d485f3b" />
 
 ### Login Screen
 <img width="396" height="765" alt="Screenshot 2026-10-26 at 5 02 09 PM" src="https://github.com/user-attachments/assets/0d60a6b6-062d-4ec9-9059-ec2a1311f8d4" />
