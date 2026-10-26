@@ -1,5 +1,26 @@
 # Connectify — Real-Time Chat App
 
+## Screenshots
+
+### Onboarding Screen
+<img width="392" height="759" alt="Screenshot 2026-10-26 at 5 01 58 PM" src="https://github.com/user-attachments/assets/dc3e420b-b5ef-408c-9a77-724a5d485f3b" />
+
+### Signup Screen
+<img width="391" height="761" alt="Screenshot 2026-10-26 at 5 01 48 PM" src="https://github.com/user-attachments/assets/eed11fe6-da71-47ec-9887-2f3218ec38f6" />
+
+### Login Screen
+<img width="396" height="765" alt="Screenshot 2026-10-26 at 5 02 09 PM" src="https://github.com/user-attachments/assets/0d60a6b6-062d-4ec9-9059-ec2a1311f8d4" />
+
+### Email Verification Screen
+<img width="382" height="754" alt="Screenshot 2026-10-26 at 5 06 08 PM" src="https://github.com/user-attachments/assets/071038cc-08dc-4a71-abf4-634af9086ea6" />
+
+### Chat Screen
+<img width="391" height="762" alt="Screenshot 2026-10-26 at 5 08 20 PM" src="https://github.com/user-attachments/assets/cc86a6f9-6929-4e0e-af8e-aa79356263dc" />
+
+### Conversations Screen
+<img width="394" height="762" alt="Screenshot 2026-10-26 at 5 10 11 PM" src="https://github.com/user-attachments/assets/b53ff256-80aa-46da-8053-b34ce583a30c" />
+
+
 **Connectify** is a mobile messaging application built with React Native and Expo. It provides a simple interface for users to register, verify their email, sign in, and communicate through real-time messaging.
 
 The application connects to a NestJS backend for authentication, message storage, and real-time communication.
