@@ -35,6 +35,20 @@ The application connects to a NestJS backend for authentication, message storage
 - **Authentication Flow:** Handle login state, authenticated screens, and logout.
 - **Cross-Platform Development:** Build and test the application using Expo for supported platforms.
 
+## Email verification flow
+
+Signup calls `POST /auth/register`. The app opens the OTP screen after the
+backend accepts the request. That response includes `deliveryStatus` and
+`resendAfterSeconds`; the screen shows the status and starts the resend
+countdown. A provider acceptance means the request was accepted for sending,
+not that the email reached the inbox.
+
+The OTP screen calls `POST /auth/resend-verification` with the email address
+when the resend timer ends. A resend that passes the cooldown replaces the
+previous code. Codes contain four digits, expire after 10 minutes, and are
+consumed after successful verification. After verification, the app returns
+the user to sign in.
+
 ## Tech Stack
 
 | Component | Technology |

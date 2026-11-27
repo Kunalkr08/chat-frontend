@@ -11,14 +11,17 @@ import {
   loginUser,
   logoutCurrentUser,
   registerUser,
+  resendVerification as resendVerificationRequest,
   verifyEmail as verifyEmailRequest,
 } from "./auth.service";
 import type {
   CreateUserDto,
   LoginResponse,
   LoginUserDto,
+  ResendVerificationDto,
   User,
   VerifyEmailDto,
+  VerificationRequestResponse,
 } from "./auth.types";
 import { ApiError } from "@/shared/api-client";
 import { removeAccessToken, saveAccessToken } from "./auth.token.handler";
@@ -26,7 +29,10 @@ import { removeAccessToken, saveAccessToken } from "./auth.token.handler";
 type AuthContextValue = {
   user: User | null;
   isAuthenticating: boolean;
-  register: (dto: CreateUserDto) => Promise<{ message: string }>;
+  register: (dto: CreateUserDto) => Promise<VerificationRequestResponse>;
+  resendVerification: (
+    dto: ResendVerificationDto,
+  ) => Promise<VerificationRequestResponse>;
   verifyEmail: (dto: VerifyEmailDto) => Promise<{ message: string }>;
   login: (dto: LoginUserDto) => Promise<LoginResponse>;
   logout: () => Promise<void>;
@@ -39,29 +45,44 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const [isAuthenticating, setIsAuthenticating] = useState(true);
 
   useEffect(() => {
-    restoreSession();
-  }, []);
+    let isMounted = true;
 
-  async function restoreSession() {
-    try {
-      const currentUser = await getCurrentUser();
-      setUser(currentUser);
-    } catch (error) {
-      if (error instanceof ApiError && error.status === 401) {
-        setUser(null);
-      }
-    } finally {
-      setIsAuthenticating(false);
-    }
-  }
+    getCurrentUser()
+      .then((currentUser) => {
+        if (isMounted) {
+          setUser(currentUser);
+        }
+      })
+      .catch((error) => {
+        if (isMounted && error instanceof ApiError && error.status === 401) {
+          setUser(null);
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setIsAuthenticating(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const register = async (dto: CreateUserDto) => {
     setIsAuthenticating(true);
-    console.log("logs from register");
     try {
       return await registerUser(dto);
     } finally {
-      console.log("log after register");
+      setIsAuthenticating(false);
+    }
+  };
+
+  const resendVerification = async (dto: ResendVerificationDto) => {
+    setIsAuthenticating(true);
+    try {
+      return await resendVerificationRequest(dto);
+    } finally {
       setIsAuthenticating(false);
     }
   };
@@ -100,6 +121,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         user,
         isAuthenticating,
         register,
+        resendVerification,
         verifyEmail,
         login,
         logout,
