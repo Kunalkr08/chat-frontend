@@ -25,3 +25,15 @@ export type VerifyEmailDto = {
   email: string,
   otp: string
 }
+
+export type VerificationDeliveryStatus = "accepted" | "failed" | "cooldown";
+
+export type VerificationRequestResponse = {
+  message: string;
+  deliveryStatus: VerificationDeliveryStatus;
+  resendAfterSeconds: number;
+};
+
+export type ResendVerificationDto = {
+  email: string;
+};

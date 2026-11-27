@@ -14,6 +14,10 @@ import {
 } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
+import type {
+  VerificationDeliveryStatus,
+  VerificationRequestResponse,
+} from "@/features/auth/auth.types";
 import { styles } from "./EmailVerification.styles";
 
 const GREEN = "#25D366";
@@ -23,8 +27,10 @@ const BACKGROUND = "#F7F9FA";
 interface EmailVerificationScreenProps {
   email: string;
   onVerifyOtp: (otp: string) => Promise<boolean>;
-  onResendOtp: () => Promise<void>;
+  onResendOtp: () => Promise<VerificationRequestResponse>;
   onGoToLogin: () => void;
+  initialDeliveryStatus?: VerificationDeliveryStatus;
+  initialResendAfterSeconds?: number;
 }
 
 const OTP_LENGTH = 4;
@@ -34,17 +40,43 @@ export function EmailVerificationScreen({
   onVerifyOtp,
   onResendOtp,
   onGoToLogin,
+  initialDeliveryStatus,
+  initialResendAfterSeconds = 0,
 }: EmailVerificationScreenProps) {
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(
+    Math.max(0, Math.ceil(initialResendAfterSeconds)),
+  );
+  const [deliveryMessage, setDeliveryMessage] = useState(() => {
+    if (initialDeliveryStatus === "failed") {
+      return "We couldn't request the email. Try again when the resend timer ends.";
+    }
+    if (initialDeliveryStatus === "cooldown") {
+      return "A code was requested recently. You can request another when the timer ends.";
+    }
+    return "Check your inbox and spam folder. Email delivery can take a little time.";
+  });
 
-  const inputRefs = useRef<Array<TextInput | null>>([]);
+  const inputRefs = useRef<(TextInput | null)[]>([]);
 
   const otpValue = otp.join("");
   const isOtpComplete = otpValue.length === OTP_LENGTH;
+
+  useEffect(() => {
+    if (resendCooldown <= 0) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setResendCooldown((seconds) => Math.max(0, seconds - 1));
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [resendCooldown]);
 
   useEffect(() => {
     if (success) {
@@ -118,11 +150,19 @@ export function EmailVerificationScreen({
     setError("");
 
     try {
-      await onResendOtp();
-      setOtp(Array(OTP_LENGTH).fill(""));
-      inputRefs.current[0]?.focus();
-    } catch {
-      setError("Unable to resend OTP. Please try again.");
+      const response = await onResendOtp();
+      if (response.deliveryStatus !== "cooldown") {
+        setOtp(Array(OTP_LENGTH).fill(""));
+        inputRefs.current[0]?.focus();
+      }
+      setDeliveryMessage(response.message);
+      setResendCooldown(Math.max(0, response.resendAfterSeconds));
+    } catch (cause) {
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : "Unable to request another code. Please try again.",
+      );
     } finally {
       setResending(false);
     }
@@ -194,7 +234,7 @@ export function EmailVerificationScreen({
             <Text style={styles.title}>Verify your email</Text>
 
             <Text style={styles.description}>
-              We've sent a 4-digit verification code to
+              Enter the 4-digit verification code for
             </Text>
 
             <Text style={styles.email}>{email}</Text>
@@ -233,6 +273,7 @@ export function EmailVerificationScreen({
             <Text style={styles.helperText}>
               Enter the 4-digit code to verify your account.
             </Text>
+            <Text style={styles.helperText}>{deliveryMessage}</Text>
 
             {/* Error */}
             {error ? <Text style={styles.errorText}>{error}</Text> : null}
@@ -256,22 +297,37 @@ export function EmailVerificationScreen({
               )}
             </Pressable>
 
-            {/* Resend */}
-            {/* <View style={styles.resendContainer}>
-              <Text style={styles.resendText}>Didn't receive the code? </Text>
+            <View style={styles.resendContainer}>
+              <Text style={styles.resendText}>
+                {resendCooldown > 0
+                  ? `You can request another code in ${resendCooldown}s.`
+                  : "Didn't receive the code?"}
+              </Text>
 
               <Pressable
                 onPress={handleResendOtp}
-                disabled={resending}
+                disabled={resending || resendCooldown > 0}
                 hitSlop={8}
+                accessibilityRole="button"
+                accessibilityState={{
+                  disabled: resending || resendCooldown > 0,
+                  busy: resending,
+                }}
               >
                 {resending ? (
                   <ActivityIndicator size="small" color={DARK_GREEN} />
                 ) : (
-                  <Text style={styles.resendButton}>Resend OTP</Text>
+                  <Text
+                    style={[
+                      styles.resendButton,
+                      resendCooldown > 0 && { opacity: 0.5 },
+                    ]}
+                  >
+                    Resend code
+                  </Text>
                 )}
               </Pressable>
-            </View> */}
+            </View>
 
             {/* Footer */}
             <View style={styles.footer}>

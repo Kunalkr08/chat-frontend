@@ -5,32 +5,30 @@ import type {
   LoginUserDto,
   User,
   VerifyEmailDto,
+  ResendVerificationDto,
+  VerificationRequestResponse,
 } from "./auth.types";
 
-export type AuthResponse = User | { user: User };
-export type AccessTokenResponse = String;
+export type AccessTokenResponse = string;
 export type VerifyEmailResponse = {
-  message: string;
-};
-export type RegisterResponse = {
   message: string;
 };
 type LogoutResponse = {
   message: string;
 };
 
-function getAuthUser(response: AuthResponse): User {
-  return "user" in response ? response.user : response;
-}
-
-export async function registerUser(dto: CreateUserDto) {
-  console.log("Starting user registration.");
-  const result = await apiRequest<RegisterResponse>("/auth/register", {
+export function registerUser(dto: CreateUserDto) {
+  return apiRequest<VerificationRequestResponse>("/auth/register", {
     method: "POST",
     body: JSON.stringify(dto),
   });
-  console.log("User register successfully.", result);
-  return result;
+}
+
+export function resendVerification(dto: ResendVerificationDto) {
+  return apiRequest<VerificationRequestResponse>("/auth/resend-verification", {
+    method: "POST",
+    body: JSON.stringify(dto),
+  });
 }
 
 export async function loginUser(dto: LoginUserDto): Promise<LoginResponse> {

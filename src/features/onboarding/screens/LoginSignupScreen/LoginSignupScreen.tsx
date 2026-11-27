@@ -49,7 +49,7 @@ export function LoginSignupScreen() {
 
     try {
       if (mode === "register") {
-        await register({
+        const result = await register({
           name: name.trim(),
           email: normalizedEmail,
           password,
@@ -57,7 +57,11 @@ export function LoginSignupScreen() {
 
         router.push({
           pathname: "/email-verification",
-          params: { email: normalizedEmail },
+          params: {
+            email: normalizedEmail,
+            deliveryStatus: result.deliveryStatus,
+            retryAfterSeconds: String(result.resendAfterSeconds),
+          },
         });
 
         return;
